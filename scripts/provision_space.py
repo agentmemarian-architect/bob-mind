@@ -127,7 +127,7 @@ def main() -> int:
     url = api.create_repo(
         repo_id=repo_id,
         repo_type="space",
-        sdk="docker",
+        space_sdk="docker",
         private=PRIVATE_SPACE,
         exist_ok=True,
         space_hardware="cpu-basic",
