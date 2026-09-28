@@ -17,6 +17,22 @@
 
 ---
 
+> ## ⚠️ Read this first — Hugging Face Spaces now require a paid plan
+>
+> Since roughly **8 July 2026**, creating **Docker or Gradio Spaces** on Hugging Face
+> requires a **PRO subscription ($9/month)**. On a free account the deploy fails with
+> `402 Payment Required` and the message *"Static Spaces are free for everyone, but
+> hosting Gradio and Docker Spaces on free cpu-basic requires a PRO subscription."*
+>
+> **On a free account, use the VM path instead: [`deploy/vm/`](deploy/vm/README.md)** —
+> a step-by-step guide to running this whole stack on an **Oracle Cloud Always Free** VM
+> (up to 4 CPU / 24 GB, permanently free). No code changes are needed; `space/` now
+> builds natively for both `amd64` and `arm64`.
+>
+> The Hugging Face instructions below still work if you subscribe to PRO.
+
+---
+
 ## What you get
 
 One free Space (2 vCPU / 16 GB RAM, no credit card) running everything behind a single Caddy front proxy:
@@ -141,7 +157,9 @@ This project is designed to be a **good tenant** of the free tier — that is wh
 |---|---|
 | Build fails at Caddy/OmniRouter download | Transient network error — **Factory rebuild** the Space (Settings) or just re-run the deploy workflow |
 | Space builds but shows "Runtime error" | Open **Logs** on the Space page; usually a missing secret — check the table above |
-| Bot silent in Telegram | 1) Token wrong? 2) `TELEGRAM_ALLOWED_USERS` missing your ID? 3) Restart the Space after adding secrets |
+| Bot silent in Telegram | 1) Token wrong? 2) `TELEGRAM_ALLOWED_USERS` missing your **numeric** ID? 3) Restart after adding secrets. On a VM check with `docker exec bob-mind grep TELEGRAM /opt/data/.env` |
+| Deploy fails with `402 Payment Required` | Free HF accounts can no longer create Docker Spaces — see the notice at the top, and use [`deploy/vm/`](deploy/vm/README.md) |
+| Bot connects but never replies | `HERMES_MODEL` unset used to write a placeholder model id. Fixed — the default is now the keyless `auto` model. `git pull` and rebuild. |
 | Dashboard 401 loop | `DASHBOARD_USERNAME`/`DASHBOARD_PASSWORD` not both set — dashboard is disabled unless both exist |
 | `/hermes-api/v1` returns 401 | Send `Authorization: Bearer <HERMES_API_KEY>` |
 | State lost after restart | `HF_TOKEN`/`BACKUP_REPO` missing → backups silently disabled; set both + restart |
